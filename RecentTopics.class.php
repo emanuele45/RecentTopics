@@ -7,27 +7,51 @@
  * @copyright Recent Topics contributors
  * @license   BSD http://opensource.org/licenses/BSD-3-Clause
  *
- * @version 0.0.1
+ * @version 0.0.3
  *
  */
 
 class Recent_Topics_Integrate
 {
-	public static function get()
+	protected static $_number_recent_posts = 0;
+
+	public static function boardindex_before()
 	{
-		global $settings, $user_info, $context;
+		global $settings;
 
 		if (!isset($settings['number_recent_posts']) || $settings['number_recent_posts'] < 2)
 			return;
 
-// 		loadLanguage('RecentTopics');
+		self::$_number_recent_posts = $settings['number_recent_posts'];
+		$settings['number_recent_posts'] = 0;
+	}
+
+	public static function get()
+	{
+		global $user_info, $context;
+
+		if (empty(self::$_number_recent_posts))
+			return;
 
 		$latestTopicOptions = array(
-			'number_posts' => $settings['number_recent_posts'],
+			'number_posts' => self::$_number_recent_posts,
 			'id_member' => $user_info['id'],
 		);
 
 		$context['latest_posts'] = cache_quick_get('boardindex-latest_topics:' . md5($user_info['query_wanna_see_board'] . $user_info['language']), 'subs/RecentTopics.class.php', 'cache_getLastTopics', array($latestTopicOptions));
+
+		if (!empty($context['latest_posts']) || !empty($context['latest_post']))
+		{
+			loadLanguage('RecentTopics');
+			array_unshift($context['info_center_callbacks'], 'recent_posts');
+		}
+	}
+
+	public static function create_post()
+	{
+		global $user_info;
+
+		cache_put_data('boardindex-latest_topics:' . md5($user_info['query_wanna_see_board'] . $user_info['language']), null, 60);
 	}
 }
 
@@ -69,10 +93,10 @@ function getLastTopics($latestTopicOptions)
 	// @todo SLOW This query is now slow, NEEDS to be fixed.  Maybe break into two?
 	$request = $db->query('substring', '
 		SELECT
-			mf.poster_time, mf.subject, mf.id_topic, mf.id_member, ml.id_msg, t.id_first_msg, ml.id_msg_modified,
+			ml.poster_time, mf.subject, ml.id_topic, ml.id_member, ml.id_msg, t.id_first_msg, ml.id_msg_modified,
 			' . ($latestTopicOptions['id_member'] == 0 ? '0' : 'IFNULL(lt.id_msg, IFNULL(lmr.id_msg, -1)) + 1') . ' AS new_from,
-			IFNULL(mem.real_name, mf.poster_name) AS poster_name, t.id_board, b.name AS board_name,
-			SUBSTRING(mf.body, 1, 385) AS body, mf.smileys_enabled
+			IFNULL(mem.real_name, ml.poster_name) AS poster_name, t.id_board, b.name AS board_name,
+			SUBSTRING(ml.body, 1, 385) AS body, ml.smileys_enabled
 		FROM {db_prefix}topics AS t
 			INNER JOIN {db_prefix}boards AS b ON (b.id_board = t.id_board)
 			LEFT JOIN {db_prefix}messages AS mf ON (t.id_first_msg = mf.id_msg)
@@ -145,4 +169,3 @@ function getLastTopics($latestTopicOptions)
 
 	return $posts;
 }
-

@@ -9,20 +9,24 @@
  * @copyright Recent Topics contributors
  * @license   BSD http://opensource.org/licenses/BSD-3-Clause
  *
- * @version 0.0.1
+ * @version 0.0.3
  *
  */
 	]]></license>
 	<id>emanuele:recenttopics</id>
 	<name>Recent Topics</name>
-	<version>0.0.1</version>
+	<version>0.0.3</version>
 	<type>modification</type>
 	<install for="1.0 - 1.0.99">
 		<require-file name="RecentTopics.class.php" destination="SUBSDIR" />
+		<hook hook="integrate_action_boardindex_before" file="SUBSDIR/RecentTopics.class.php" function="Recent_Topics_Integrate::boardindex_before" />
 		<hook hook="integrate_action_boardindex_after" file="SUBSDIR/RecentTopics.class.php" function="Recent_Topics_Integrate::get" />
+		<hook hook="integrate_create_post" file="SUBSDIR/RecentTopics.class.php" function="Recent_Topics_Integrate::create_post" />
 	</install>
 	<uninstall for="1.0 - 1.0.99">
 		<remove-file name="SUBSDIR/RecentTopics.class.php" />
+		<hook reverse="true" hook="integrate_action_boardindex_before" file="SUBSDIR/RecentTopics.class.php" function="Recent_Topics_Integrate::boardindex_before" />
 		<hook reverse="true" hook="integrate_action_boardindex_after" file="SUBSDIR/RecentTopics.class.php" function="Recent_Topics_Integrate::get" />
+		<hook reverse="true" hook="integrate_create_post" file="SUBSDIR/RecentTopics.class.php" function="Recent_Topics_Integrate::create_post" />
 	</uninstall>
 </package-info>
