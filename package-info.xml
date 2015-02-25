@@ -9,13 +9,13 @@
  * @copyright Recent Topics contributors
  * @license   BSD http://opensource.org/licenses/BSD-3-Clause
  *
- * @version 0.0.3
+ * @version 0.0.4
  *
  */
 	]]></license>
 	<id>emanuele:recenttopics</id>
 	<name>Recent Topics</name>
-	<version>0.0.3</version>
+	<version>0.0.4</version>
 	<type>modification</type>
 	<install for="1.0 - 1.0.99">
 		<require-file name="RecentTopics.class.php" destination="SUBSDIR" />
