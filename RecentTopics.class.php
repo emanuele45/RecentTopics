@@ -101,10 +101,10 @@ function getLastTopics($latestTopicOptions)
 			INNER JOIN {db_prefix}boards AS b ON (b.id_board = t.id_board)
 			LEFT JOIN {db_prefix}messages AS mf ON (t.id_first_msg = mf.id_msg)
 			LEFT JOIN {db_prefix}messages AS ml ON (t.id_last_msg = ml.id_msg)
-			LEFT JOIN {db_prefix}members AS mem ON (mem.id_member = mf.id_member)' . ($latestTopicOptions['id_member'] == 0 ? '' : '
-				LEFT JOIN {db_prefix}log_topics AS lt ON (lt.id_topic = t.id_topic AND lt.id_member = {int:current_member})
-				LEFT JOIN {db_prefix}log_mark_read AS lmr ON (lmr.id_board = t.id_board AND lmr.id_member = {int:current_member})') . '
-		WHERE mf.id_msg >= {int:likely_max_msg}' .
+			LEFT JOIN {db_prefix}members AS mem ON (mem.id_member = ml.id_member)' . ($latestTopicOptions['id_member'] == 0 ? '' : '
+			LEFT JOIN {db_prefix}log_topics AS lt ON (lt.id_topic = t.id_topic AND lt.id_member = {int:current_member})
+			LEFT JOIN {db_prefix}log_mark_read AS lmr ON (lmr.id_board = t.id_board AND lmr.id_member = {int:current_member})') . '
+		WHERE ml.id_msg >= {int:likely_max_msg}' .
 			(!empty($modSettings['recycle_enable']) && $modSettings['recycle_board'] > 0 ? '
 			AND b.id_board != {int:recycle_board}' : '') . '
 			AND {query_wanna_see_board}' . ($modSettings['postmod_active'] ? '
