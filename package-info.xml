@@ -19,11 +19,13 @@
 	<type>modification</type>
 	<install for="1.0 - 1.0.99">
 		<require-file name="RecentTopics.class.php" destination="SUBSDIR" />
+		<require-file name="RecentTopics.english.php" destination="LANGUAGEDIR/english" />
 		<hook hook="integrate_action_boardindex_before" file="SUBSDIR/RecentTopics.class.php" function="Recent_Topics_Integrate::boardindex_before" />
 		<hook hook="integrate_action_boardindex_after" file="SUBSDIR/RecentTopics.class.php" function="Recent_Topics_Integrate::get" />
 		<hook hook="integrate_create_post" file="SUBSDIR/RecentTopics.class.php" function="Recent_Topics_Integrate::create_post" />
 	</install>
 	<uninstall for="1.0 - 1.0.99">
+		<remove-file name="LANGUAGEDIR/english/RecentTopics.english.php" />
 		<remove-file name="SUBSDIR/RecentTopics.class.php" />
 		<hook reverse="true" hook="integrate_action_boardindex_before" file="SUBSDIR/RecentTopics.class.php" function="Recent_Topics_Integrate::boardindex_before" />
 		<hook reverse="true" hook="integrate_action_boardindex_after" file="SUBSDIR/RecentTopics.class.php" function="Recent_Topics_Integrate::get" />
