@@ -49,9 +49,10 @@ class Recent_Topics_Integrate
 
 	public static function create_post()
 	{
-		global $user_info;
+		global $user_info, $modSettings;
 
-		cache_put_data('boardindex-latest_topics:' . md5($user_info['query_wanna_see_board'] . $user_info['language']), null, 60);
+		if (!empty($modSettings['cache_enable']) && $modSettings['cache_enable'] < 2)
+			cache_put_data('boardindex-latest_topics:' . md5($user_info['query_wanna_see_board'] . $user_info['language']), null, 60);
 	}
 }
 
